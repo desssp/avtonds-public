@@ -45,7 +45,7 @@
         </tr>
         <tr>
             <th>Бюджет от</th>
-            <td>{{ request.min_price }}</td>
+            <td>{{ request.min_price |default:'-' }}</td>
         </tr>
         <tr>
             <th>Бюджет до</th>
@@ -53,31 +53,31 @@
         </tr>
         <tr>
             <th>Пробег до</th>
-            <td>{{ request.max_mileage }}</td>
+            <td>{{ request.max_mileage |default:'-' }}</td>
         </tr>
         <tr>
             <th>Год выпуска от</th>
-            <td>{{ request.max_age }}</td>
+            <td>{{ request.max_age |default:'-' }}</td>
         </tr>
         <tr>
             <th>Цвет</th>
-            <td>{{ request.color }}</td>
+            <td>{{ request.color |default:'-' }}</td>
         <tr>
         </tr>
             <th>Тип кузова</th>
-            <td>{{ request.get_body_type_display }}</td>
+            <td>{{ request.get_body_type_display |default:'-' }}</td>
         </tr>
         <tr>
             <th>Вид топлива</th>
-            <td>{{ request.get_fuel_display }}</td>
+            <td>{{ request.get_fuel_display |default:'-' }}</td>
         </tr>
         <tr>
             <th>Объем двигателя</th>
-            <td>{{ request.engine_capacity }}</td>
+            <td>{{ request.engine_capacity |default:'-' }}</td>
         </tr>
         <tr>
             <th>Мощность (л/с)</th>
-            <td>{{ request.engine_power }}</td>
+            <td>{{ request.engine_power |default:'-' }}</td>
         </tr>
         <tr>
             <th>Статус</th>
@@ -85,7 +85,7 @@
         </tr>
         <tr>
             <th>Дополнительные данные</th>
-            <td>{{ request.additional_requirements }}</td>
+            <td>{{ request.additional_requirements |default:'-' }}</td>
         </tr>
     </table>
     <div class="module">
@@ -121,12 +121,12 @@
                         <td>{{ item.color }}</td>
                         <td>{{ item.mileage }}</td>
                         <td>{{ item.year_of_issue }}</td>
-                        <td>{{ item.get_body_type_display }}</td>
-                        <td>{{ item.get_fuel_display_name }}</td>
-                        <td>{{ item.engine_capacity }}</td>
-                        <td>{{ item.engine_power }}</td>
+                        <td>{{ item.get_body_type_display |default:'-' }}</td>
+                        <td>{{ item.get_fuel_display_name |default:'-' }}</td>
+                        <td>{{ item.engine_capacity |default:'-' }}</td>
+                        <td>{{ item.engine_power |default:'-' }}</td>
                         <td>{{ item.status.name }}</td>
-                        <td>{{ item.additional_requirements }}</td>
+                        <td>{{ item.additional_requirements |default:'-' }}</td>
                     </tr>
                 {% endfor %}
                 <tr class="total">
