@@ -1,0 +1,1 @@
+[{"model": "default.offerstatus", "pk": 1, "fields": {"name": "Новый"}}, {"model": "default.offerstatus", "pk": 2, "fields": {"name": "Отменен"}}]

@@ -1,0 +1,1 @@
+[{"model": "default.requeststatus", "pk": 1, "fields": {"name": "Новый"}}, {"model": "default.requeststatus", "pk": 2, "fields": {"name": "Отменен"}}]
