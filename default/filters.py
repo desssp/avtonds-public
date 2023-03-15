@@ -30,6 +30,6 @@ class CarModelSimpleDropdownFilter(SimpleDropdownFilter):
         car_model_id = self.value()
         if car_model_id:
             car_mark_id = request.GET.get('car_mark__id__exact') or request.GET.get('car_mark')
-            if car_mark_id and int(car_mark_id) == CarModel.objects.get(id=car_model_id).car_mark_id:
+            if not car_mark_id or int(car_mark_id) == CarModel.objects.get(id=car_model_id).car_mark_id:
                 return queryset.filter(car_model=car_model_id)
         return queryset
