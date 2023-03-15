@@ -26,10 +26,10 @@ def base_validation(cleaned_data):
 
     def only_one_of_check_list_processing():
         only_one_of_check_list = [
-            {
-                'attr_list': ['user_type', 'is_staff'],
-                'error_text': 'Сотрудник не может иметь тип клиента',
-            },
+            # {
+            #     'attr_list': ['user_type', 'is_staff'],
+            #     'error_text': 'Сотрудник не может иметь тип клиента',
+            # },
             {
                 'attr_list': ['user_type', 'is_superuser'],
                 'error_text': 'SuperUser не может иметь тип клиента',
