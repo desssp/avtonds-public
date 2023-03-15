@@ -189,7 +189,6 @@ class Request(models.Model):
 class Offer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     car_mark = models.ForeignKey(CarMark, on_delete=models.DO_NOTHING, verbose_name='Марка')
-    # car_model = models.ForeignKey(CarModel, on_delete=models.DO_NOTHING)
     car_model = ChainedForeignKey(CarModel,
                                   chained_field='car_mark',
                                   chained_model_field='car_mark',

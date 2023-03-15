@@ -30,7 +30,11 @@ def admin_offer_requests_matches(request, offer_id):
         )
     return render(request,
                   'admin/offers/offer/requests_matches.html',
-                  {'offer': offer, 'request_set': qs})
+                  {
+                      'offer': offer,
+                      'request_set': qs,
+                      'is_admin': request.user.is_superuser
+                  })
 
 
 @staff_member_required
@@ -44,4 +48,8 @@ def admin_request_offers_matches(request, request_id):
         )
     return render(request,
                   'admin/requests/request/offers_matches.html',
-                  {'request': req, 'offer_set': qs})
+                  {
+                      'request': req,
+                      'offer_set': qs,
+                      'is_admin': request.user.is_superuser
+                  })

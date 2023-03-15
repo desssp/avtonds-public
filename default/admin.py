@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import User, Request, Offer
-from .forms import DefaultUserCreationForm, DefaultUserChangeForm
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe, SafeString
 from django.urls import reverse
+from django.db.models import Count, Subquery, OuterRef
 from django_admin_listfilter_dropdown.filters import RelatedOnlyDropdownFilter
+from .models import User, Request, Offer
+from .forms import DefaultUserCreationForm, DefaultUserChangeForm
 from .filters import CarModelSimpleDropdownFilter
 
 
@@ -18,7 +19,7 @@ def get_filtered_fieldset(user, request):
     list_display_fields = [
         {'pos': False, 'name': 'user'},
         {'pos': True, 'name': 'status'},
-        {'pos': True, 'name': 'button'}
+        # {'pos': True, 'name': 'button'}
     ]
     list_display = request.list_display
 
@@ -142,7 +143,15 @@ class RequestAdmin(admin.ModelAdmin):
         return super(RequestAdmin, self).changelist_view(request)
 
     def get_queryset(self, request):
-        qs = super(RequestAdmin, self).get_queryset(request)
+        matches = Subquery(
+            Offer.objects.filter(
+                car_mark_id=OuterRef('car_mark_id'),
+                car_model_id=OuterRef('car_model_id')
+            ).values('id'),
+        )
+        qs = super(RequestAdmin, self).get_queryset(request).annotate(
+            offer_matches_count=Count(matches)
+        )
         if request.user.is_superuser:
             return qs.prefetch_related('car_mark', 'car_model', 'status')
         else:
@@ -162,9 +171,12 @@ class RequestAdmin(admin.ModelAdmin):
     @staticmethod
     @admin.display(description='Операции')
     def button(obj) -> SafeString:
-        url = f'{reverse("default:admin_request_offers_matches", kwargs={"request_id": obj.id})}'
-        return mark_safe(
-            f'<a class="button" href="{url}">Искать предложения</a>')
+        if obj.offer_matches_count > 0:
+            url = f'{reverse("default:admin_request_offers_matches", kwargs={"request_id": obj.id})}'
+            return mark_safe(
+                f'<a class="button" href="{url}">Подходящие предложения [{obj.offer_matches_count}]</a>')
+        else:
+            return mark_safe('<a>Нет совпадений</a>')
 
 
 class OfferAdmin(admin.ModelAdmin):
@@ -213,7 +225,16 @@ class OfferAdmin(admin.ModelAdmin):
         return super(OfferAdmin, self).changelist_view(request)
 
     def get_queryset(self, request):
-        qs = super(OfferAdmin, self).get_queryset(request)
+        matches = Subquery(
+            Request.objects.filter(
+                car_mark_id=OuterRef('car_mark_id'),
+                car_model_id=OuterRef('car_model_id')
+            ).values('id'),
+        )
+
+        qs = super(OfferAdmin, self).get_queryset(request).annotate(
+            request_matches_count=Count(matches)
+        )
         if request.user.is_superuser:
             return qs.prefetch_related('car_mark', 'car_model', 'status')
         else:
@@ -233,9 +254,12 @@ class OfferAdmin(admin.ModelAdmin):
     @staticmethod
     @admin.display(description='Операции')
     def button(obj) -> SafeString:
-        url = f'{reverse("default:admin_offer_requests_matches", kwargs={"offer_id": obj.id})}'
-        return mark_safe(
-            f'<a class="button" href="{url}">Искать запросы</a>')
+        if obj.request_matches_count > 0:
+            url = f'{reverse("default:admin_offer_requests_matches", kwargs={"offer_id": obj.id})}'
+            return mark_safe(
+                f'<a class="button" href="{url}">Подходящие запросы [{obj.request_matches_count}]</a>')
+        else:
+            return mark_safe('<a>Нет совпадений</a>')
     button.short_description = 'Операции'
 
 

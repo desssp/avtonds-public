@@ -6,7 +6,7 @@
 {#{% endblock %}#}
 
 {% block title %}
-    Offer {{ request.id }} {{ block.super }}
+    Запрос {{ request.id }} {{ block.super }}
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Offer {{ request.id }}</h1>
+    <h1>Запрос {{ request.id }}</h1>
     <ul class="object-tools">
         <li>
             <a href="#" onclick="window.print();">Print request</a>
@@ -31,14 +31,16 @@
             <th>Created</th>
             <td>{{ request.created }}</td>
         </tr>
-        <tr>
-            <th>Клиент</th>
-            <td>{{ request.user.full_name }}</td>
-        </tr>
-        <tr>
-            <th>E-mail</th>
-            <td><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></td>
-        </tr>
+        {% if is_admin %}
+            <tr>
+                <th>Клиент</th>
+                <td>{{ request.user.full_name }}</td>
+            </tr>
+            <tr>
+                <th>E-mail</th>
+                <td><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></td>
+            </tr>
+        {% endif %}
         <tr>
             <th>Авто</th>
             <td>{{ request.car_mark.name }} {{ request.car_model.name }}</td>
@@ -93,10 +95,12 @@
             <table>
                 <h2>Подходящие предложения</h2>
                 <thead>
-                <tr>
+                <tr>58
                     <th>ID запроса</th>
-                    <th>Поставщик</th>
-                    <th>Почта</th>
+                    {% if is_admin %}
+                        <th>Поставщик</th>
+                        <th>Почта</th>
+                    {% endif %}
                     <th>Автомобиль</th>
                     <th>Местонахождение</th>
                     <th>Цена</th>
@@ -109,14 +113,19 @@
                     <th>Мощность (л/с)</th>
                     <th>Статус</th>
                     <th>Дополнительные данные</th>
+                    {% if not is_admin %}
+                        <th>Операции</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for item in offer_set %}
                     <tr class="row{% cycle "1" "2" %}">
                         <td>{{ item.id }}</td>
-                        <td>{{ item.user.full_name }}</td>
-                        <td><a href="mailto:{{ item.user.email }}">{{ item.user.email }}</a></td>
+                        {% if is_admin %}
+                            <td>{{ item.user.full_name }}</td>
+                            <td><a href="mailto:{{ item.user.email }}">{{ item.user.email }}</a></td>
+                        {% endif %}
                         <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
                         <td>{{ item.location }}</td>
                         <td>{{ item.price }}</td>
@@ -129,6 +138,9 @@
                         <td>{{ item.engine_power |default:'-' }}</td>
                         <td>{{ item.status.name }}</td>
                         <td>{{ item.additional_requirements |default:'-' }}</td>
+                        {% if not is_admin %}
+                            <td><a class="button" href="#">Запросить подробности</a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 <tr class="total">
