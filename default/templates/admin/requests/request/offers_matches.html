@@ -98,6 +98,7 @@
                     <th>Поставщик</th>
                     <th>Почта</th>
                     <th>Автомобиль</th>
+                    <th>Местонахождение</th>
                     <th>Цена</th>
                     <th>Цвет</th>
                     <th>Пробег</th>
@@ -117,6 +118,7 @@
                         <td>{{ item.user.full_name }}</td>
                         <td><a href="mailto:{{ item.user.email }}">{{ item.user.email }}</a></td>
                         <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
+                        <td>{{ item.location }}</td>
                         <td>{{ item.price }}</td>
                         <td>{{ item.color }}</td>
                         <td>{{ item.mileage }}</td>
