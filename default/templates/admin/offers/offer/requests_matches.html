@@ -1,0 +1,140 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{#{% block extrastyle %}#}
+{#    <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}" />#}
+{#{% endblock %}#}
+
+{% block title %}
+    Offer {{ offer.id }} {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url "admin:index" %}">Home</a> &rsaquo;
+        <a href="{% url "admin:default_offer_changelist" %}">Offers</a>
+        &rsaquo;
+        <a href="{% url "admin:default_offer_change" offer.id %}">Offer {{ offer.id }}</a>
+        &rsaquo; Detail
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1>Offer {{ offer.id }}</h1>
+    <ul class="object-tools">
+        <li>
+            <a href="#" onclick="window.print();">Print offer</a>
+        </li>
+    </ul>
+    <table>
+        <tr>
+            <th>Created</th>
+            <td>{{ offer.created }}</td>
+        </tr>
+        <tr>
+            <th>Поставщик</th>
+            <td>{{ offer.user.full_name }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td><a href="mailto:{{ offer.user.email }}">{{ offer.user.email }}</a></td>
+        </tr>
+        <tr>
+            <th>Авто</th>
+            <td>{{ offer.car_mark.name }} {{ offer.car_model.name }}</td>
+        </tr>
+        <tr>
+            <th>Цена</th>
+            <td>{{ offer.price }}</td>
+        </tr>
+        <tr>
+            <th>Цвет</th>
+            <td>{{ offer.color }}</td>
+        </tr>
+        <tr>
+            <th>Пробег</th>
+            <td>{{ offer.mileage }}</td>
+        </tr>
+        <tr>
+            <th>Год выпуска</th>
+            <td>{{ offer.year_of_issue }}</td>
+        </tr>
+        <tr>
+            <th>Тип кузова</th>
+            <td>{{ offer.get_body_type_display }}</td>
+        </tr>
+        <tr>
+            <th>Вид топлива</th>
+            <td>{{ offer.get_fuel_display }}</td>
+        </tr>
+        <tr>
+            <th>Объем двигателя</th>
+            <td>{{ offer.engine_capacity }}</td>
+        </tr>
+        <tr>
+            <th>Мощность (л/с)</th>
+            <td>{{ offer.engine_power }}</td>
+        </tr>
+        <tr>
+            <th>Местонахождение</th>
+            <td>{{ offer.location }}</td>
+        </tr>
+        <tr>
+            <th>Статус</th>
+            <td>{{ offer.status.name }}</td>
+        </tr>
+        <tr>
+            <th>Дополнительные данные</th>
+            <td>{{ offer.additional_properties }}</td>
+        </tr>
+    </table>
+    <div class="module">
+        <div class="tabular inline-related last-related">
+            <table>
+                <h2>Подходящие запросы</h2>
+                <thead>
+                <tr>
+                    <th>ID запроса</th>
+                    <th>Клиент</th>
+                    <th>Почта</th>
+                    <th>Автомобиль</th>
+                    <th>Цвет</th>
+                    <th>Тип кузова</th>
+                    <th>Бюджет до</th>
+                    <th>Пробег до</th>
+                    <th>Год выпуска от</th>
+                    <th>Топливо</th>
+                    <th>Объем двигателя</th>
+                    <th>Мощность</th>
+                    <th>Статус</th>
+                    <th>Дополнительные требования</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in request_set %}
+                    <tr class="row{% cycle "1" "2" %}">
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.user.full_name }}</td>
+                        <td><a href="mailto:{{ item.user.email }}">{{ item.user.email }}</a></td>
+                        <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
+                        <td>{{ item.color }}</td>
+                        <td>{{ item.get_body_type_display }}</td>
+                        <td>{{ item.max_price }}</td>
+                        <td>{{ item.max_mileage }}</td>
+                        <td>{{ item.max_age }}</td>
+                        <td>{{ item.get_fuel_display_name }}</td>
+                        <td>{{ item.engine_capacity }}</td>
+                        <td>{{ item.engine_power }}</td>
+                        <td>{{ item.status.name }}</td>
+                        <td>{{ item.additional_requirements }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3">Total</td>
+                    <td class="num">{{ request_set.count }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

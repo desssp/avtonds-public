@@ -20,8 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     # path('', admin.site.urls),
+    path('', include('default.urls')),
     path('admin/', admin.site.urls),
-    # path('default/', include('default.urls')),
     path('chaining/', include('smart_selects.urls'))
 ]
 

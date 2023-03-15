@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{#{% block extrastyle %}#}
+{#    <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}" />#}
+{#{% endblock %}#}
+
+{% block title %}
+    Offer {{ offer.id }} {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url "admin:index" %}">Home</a> &rsaquo;
+        <a href="{% url "admin:default_offer_changelist" %}">Offers</a>
+        &rsaquo;
+        <a href="{% url "admin:default_offer_change" offer.id %}">Offer {{ offer.id }}</a>
+        &rsaquo; Detail
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1>Offer {{ offer.id }}</h1>
+    <ul class="object-tools">
+        <li>
+            <a href="#" onclick="window.print();">Print offer</a>
+        </li>
+    </ul>
+    <table>
+        <tr>
+            <th>Created</th>
+            <td>{{ offer.created }}</td>
+        </tr>
+        <tr>
+            <th>Seller</th>
+            <td>{{ offer.user.email }} {{ offer.user.full_name }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td><a href="mailto:{{ offer.user.email }}">{{ offer.user.email }}</a></td>
+        </tr>
+        <tr>
+            <th>Car</th>
+            <td>{{ offer.car_mark.name }} {{ offer.car_model.name }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ offer.status.name }}</td>
+        </tr>
+    </table>
+    <div class="module">
+        <div class="tabular inline-related last-related">
+            <table>
+                <h2>Items bought</h2>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in offer.car_mark.car_model_set.all %}
+                    <tr class="row{% cycle "1" "2" %}">
+                        <td>{{ item.name }}</td>
+                        <td>${{ item.name_cyrillic }}</td>
+                        <td>{{ item.model_class }}</td>
+                        <td>${{ item.year_from }}</td>
+                        <td>${{ item.year_to }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3">Total</td>
+                    <td class="num">{{ offer.car_mark.carmodel_set.count }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

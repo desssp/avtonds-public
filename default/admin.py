@@ -162,7 +162,7 @@ class RequestAdmin(admin.ModelAdmin):
     @staticmethod
     @admin.display(description='Операции')
     def button(obj) -> SafeString:
-        url = f'{reverse("admin:default_offer_changelist")}?car_mark__id__exact={obj.car_mark_id}'
+        url = f'{reverse("default:admin_request_offers_matches", kwargs={"request_id": obj.id})}'
         return mark_safe(
             f'<a class="button" href="{url}">Искать предложения</a>')
 
@@ -233,7 +233,7 @@ class OfferAdmin(admin.ModelAdmin):
     @staticmethod
     @admin.display(description='Операции')
     def button(obj) -> SafeString:
-        url = f'{reverse("admin:default_request_changelist")}?car_mark__id__exact={obj.car_mark_id}'
+        url = f'{reverse("default:admin_offer_requests_matches", kwargs={"offer_id": obj.id})}'
         return mark_safe(
             f'<a class="button" href="{url}">Искать запросы</a>')
     button.short_description = 'Операции'

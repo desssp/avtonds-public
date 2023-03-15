@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{#{% block extrastyle %}#}
+{#    <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}" />#}
+{#{% endblock %}#}
+
+{% block title %}
+    Request {{ request.id }} {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url "admin:index" %}">Home</a> &rsaquo;
+        <a href="{% url "admin:default_request_changelist" %}">Requests</a>
+        &rsaquo;
+        <a href="{% url "admin:default_request_change" request.id %}">Request {{ request.id }}</a>
+        &rsaquo; Detail
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1>Request {{ request.id }}</h1>
+    <ul class="object-tools">
+        <li>
+            <a href="#" onclick="window.print();">Print request</a>
+        </li>
+    </ul>
+    <table>
+        <tr>
+            <th>Created</th>
+            <td>{{ request.created }}</td>
+        </tr>
+        <tr>
+            <th>Seller</th>
+            <td>{{ request.user.email }} {{ request.user.full_name }}</td>
+        </tr>
+        <tr>
+            <th>E-mail</th>
+            <td><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></td>
+        </tr>
+        <tr>
+            <th>Car</th>
+            <td>{{ request.car_mark.name }} {{ request.car_model.name }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ request.status.name }}</td>
+        </tr>
+    </table>
+    <div class="module">
+        <div class="tabular inline-related last-related">
+            <table>
+                <h2>Items bought</h2>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in request.car_mark.car_model_set.all %}
+                    <tr class="row{% cycle "1" "2" %}">
+                        <td>{{ item.name }}</td>
+                        <td>${{ item.name_cyrillic }}</td>
+                        <td>{{ item.model_class }}</td>
+                        <td>${{ item.year_from }}</td>
+                        <td>${{ item.year_to }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3">Total</td>
+                    <td class="num">{{ request.car_mark.carmodel_set.count }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
