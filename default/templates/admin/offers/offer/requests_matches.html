@@ -1,9 +1,9 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-{#{% block extrastyle %}#}
-{#    <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}" />#}
-{#{% endblock %}#}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/default.css" %}" />
+{% endblock %}
 
 {% block title %}
     Предложение {{ offer.id }} {{ block.super }}
@@ -104,15 +104,18 @@
                     <th>Автомобиль</th>
                     <th>Цвет</th>
                     <th>Тип кузова</th>
-                    <th>Бюджет до</th>
-                    <th>Пробег до</th>
-                    <th>Год выпуска от</th>
+                    {% if is_admin %}
+                        <th>Бюджет до</th>
+                        <th>Пробег до</th>
+                        <th>Год выпуска от</th>
+                    {% endif %}
                     <th>Топливо</th>
                     <th>Объем двигателя</th>
                     <th>Мощность</th>
-                    <th>Статус</th>
-                    <th>Дополнительные требования</th>
-                    {% if not is_admin %}
+                    {% if is_admin %}
+                        <th>Статус</th>
+                        <th>Дополнительные требования</th>
+                    {% else %}
                         <th>Операции</th>
                     {% endif %}
                 </tr>
@@ -128,21 +131,24 @@
                         <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
                         <td>{{ item.color |default:'-' }}</td>
                         <td>{{ item.get_body_type_display |default:'-' }}</td>
-                        <td>{{ item.max_price |default:'-' }}</td>
-                        <td>{{ item.max_mileage |default:'-' }}</td>
-                        <td>{{ item.max_age |default:'-' }}</td>
+                        {% if is_admin %}
+                            <td{% if item.max_price >= offer.price %} class="MatchValue" {% endif %}>{{ item.max_price |default:'-' }}</td>
+                            <td{% if item.max_mileage >= offer.mileage %} class="MatchValue" {% endif %}>{{ item.max_mileage |default:'-' }}</td>
+                            <td{% if item.max_age >= offer.year_of_issue %} class="MatchValue" {% endif %}>{{ item.max_age |default:'-' }}</td>
+                        {% endif %}
                         <td>{{ item.get_fuel_display_name |default:'-' }}</td>
-                        <td>{{ item.engine_capacity |default:'-' }}</td>
-                        <td>{{ item.engine_power |default:'-' }}</td>
-                        <td>{{ item.status.name }}</td>
-                        <td>{{ item.additional_requirements |default:'-' }}</td>
-                        {% if not is_admin %}
+                        <td{% if item.engine_capacity == offer.engine_capacity %} class="MatchValue" {% endif %}>{{ item.engine_capacity |default:'-' }}</td>
+                        <td{% if item.engine_power == offer.engine_power %} class="MatchValue" {% endif %}>{{ item.engine_power |default:'-' }}</td>
+                        {% if is_admin %}
+                            <td>{{ item.status.name }}</td>
+                            <td>{{ item.additional_requirements |default:'-' }}</td>
+                        {% else %}
                             <td><a class="button" href="#">Запросить подробности</a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
                 <tr class="total">
-                    <td colspan="3">Total</td>
+                    <td colspan="3">Всего</td>
                     <td class="num">{{ request_set.count }}</td>
                 </tr>
                 </tbody>

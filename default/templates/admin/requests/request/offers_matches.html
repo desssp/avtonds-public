@@ -1,9 +1,9 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-{#{% block extrastyle %}#}
-{#    <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}" />#}
-{#{% endblock %}#}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/default.css" %}" />
+{% endblock %}
 
 {% block title %}
     Запрос {{ request.id }} {{ block.super }}
@@ -81,29 +81,31 @@
             <th>Мощность (л/с)</th>
             <td>{{ request.engine_power |default:'-' }}</td>
         </tr>
-        <tr>
-            <th>Статус</th>
-            <td>{{ request.status.name }}</td>
-        </tr>
-        <tr>
-            <th>Дополнительные данные</th>
-            <td>{{ request.additional_requirements |default:'-' }}</td>
-        </tr>
+        {% if is_admin %}
+            <tr>
+                <th>Статус</th>
+                <td>{{ request.status.name }}</td>
+            </tr>
+            <tr>
+                <th>Дополнительные данные</th>
+                <td>{{ request.additional_requirements |default:'-' }}</td>
+            </tr>
+        {% endif %}
     </table>
     <div class="module">
         <div class="tabular inline-related last-related">
             <table>
                 <h2>Подходящие предложения</h2>
                 <thead>
-                <tr>58
+                <tr>
                     <th>ID запроса</th>
                     {% if is_admin %}
                         <th>Поставщик</th>
                         <th>Почта</th>
+                        <th>Местонахождение</th>
+                        <th>Цена</th>
                     {% endif %}
                     <th>Автомобиль</th>
-                    <th>Местонахождение</th>
-                    <th>Цена</th>
                     <th>Цвет</th>
                     <th>Пробег</th>
                     <th>Год выпуска</th>
@@ -111,9 +113,10 @@
                     <th>Вид топлива</th>
                     <th>Объем двигателя</th>
                     <th>Мощность (л/с)</th>
-                    <th>Статус</th>
-                    <th>Дополнительные данные</th>
-                    {% if not is_admin %}
+                    {% if is_admin %}
+                        <th>Статус</th>
+                        <th>Дополнительные данные</th>
+                    {% else %}
                         <th>Операции</th>
                     {% endif %}
                 </tr>
@@ -125,26 +128,27 @@
                         {% if is_admin %}
                             <td>{{ item.user.full_name }}</td>
                             <td><a href="mailto:{{ item.user.email }}">{{ item.user.email }}</a></td>
+                            <td>{{ item.location }}</td>
+                            <td{% if item.price <= request.max_price %} class="MatchValue" {% endif %}>{{ item.price }}</td>
                         {% endif %}
                         <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
-                        <td>{{ item.location }}</td>
-                        <td>{{ item.price }}</td>
                         <td>{{ item.color }}</td>
-                        <td>{{ item.mileage }}</td>
-                        <td>{{ item.year_of_issue }}</td>
+                        <td{% if item.mileage <= request.max_mileage %} class="MatchValue" {% endif %}>{{ item.mileage }}</td>
+                        <td{% if item.year_of_issue <= request.max_age %} class="MatchValue" {% endif %}>{{ item.year_of_issue }}</td>
                         <td>{{ item.get_body_type_display |default:'-' }}</td>
                         <td>{{ item.get_fuel_display_name |default:'-' }}</td>
-                        <td>{{ item.engine_capacity |default:'-' }}</td>
-                        <td>{{ item.engine_power |default:'-' }}</td>
-                        <td>{{ item.status.name }}</td>
-                        <td>{{ item.additional_requirements |default:'-' }}</td>
-                        {% if not is_admin %}
+                        <td{% if item.engine_capacity == request.engine_capacity %} class="MatchValue" {% endif %}>{{ item.engine_capacity |default:'-' }}</td>
+                        <td{% if item.engine_power == request.engine_power %} class="MatchValue" {% endif %}>{{ item.engine_power |default:'-' }}</td>
+                        {% if is_admin %}
+                            <td>{{ item.status.name }}</td>
+                            <td>{{ item.additional_properties |default:'-' }}</td>
+                        {% else %}
                             <td><a class="button" href="#">Запросить подробности</a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
                 <tr class="total">
-                    <td colspan="3">Total</td>
+                    <td colspan="3">Всего</td>
                     <td class="num">{{ offer_set.count }}</td>
                 </tr>
                 </tbody>
