@@ -21,23 +21,36 @@
     <script type="text/javascript">
 
         const apiURL = "{{ request.build_absolute_uri }}api/"
-        const form = document.querySelector('select[id=car_mark_select]');
-        form.addEventListener('change', function (event) {
-            let val = event.target.value
-            console.log(val);
-            if (val == Number(val)) {
-                prepareData(val);
-                requestProc(val);
-                offerProc(val);
+        const formCarMark = document.querySelector('select[id=car_mark_select]');
+        formCarMark.addEventListener('change', function (event) {
+            let mark_id = event.target.value
+            console.log('mark_id');
+            console.log(mark_id);
+            if (mark_id == Number(mark_id)) {
+                carModelProc(mark_id);
+                requestProc('mark', mark_id);
+                offerProc('mark', mark_id);
             }
             else {
-                clearCarModelValues();
+                reload();
             }
         });
-
-        function prepareData(markId) {
-            carModelProc(markId);
-        }
+        const formCarModel = document.querySelector('select[id=car_model_select]');
+        formCarModel.addEventListener('change', function (event) {
+            let model_id = event.target.value
+            console.log('model_id');
+            console.log(model_id);
+            if (model_id == Number(model_id)) {
+                requestProc('model', model_id);
+                offerProc('model', model_id);
+            }
+            else {
+                let mark_id = formCarMark.options[formCarMark.selectedIndex].value
+                carModelProc(mark_id);
+                requestProc('mark', mark_id);
+                offerProc('mark', mark_id);
+            }
+        });
 
         function carModelProc(markId) {
             let modelsRequestURL = apiURL + 'car_mark_models/' + markId + '/'
@@ -63,13 +76,13 @@
             document.getElementById('car_model_select').innerHTML = models_html_select;
         }
 
-        function clearCarModelValues() {
-            document.getElementById('car_model_select').innerHTML = '<option selected>Выберите интересующую модель</option>';
-        }
-
-        function requestProc(markId) {
-            let requestRequest = new XMLHttpRequest();
-            let requestApiURL = apiURL + 'request_list?car_mark_id=' + markId;
+        function requestProc(attr_name, val) {
+            let requestApiURL = apiURL + 'request_list?car_mark_id=' + val;
+            if (attr_name === 'model') {
+                let mark_id = formCarMark.options[formCarMark.selectedIndex].value
+                requestApiURL = apiURL + 'request_list?car_mark_id=' + mark_id + '&car_model_id=' + val;
+            }
+            let requestRequest = new XMLHttpRequest()
             requestRequest.open("GET", requestApiURL, true);
             requestRequest.onerror = function () {
                 console.log("requestRequest Connection Error");
@@ -97,9 +110,13 @@
             document.getElementById('requests_table_body').innerHTML = requests_html_table;
         }
 
-        function offerProc(markId) {
+        function offerProc(attr_name, val) {
             let offerRequest = new XMLHttpRequest();
-            let offerApiURL = apiURL + 'offer_list?car_mark_id=' + markId;
+            let offerApiURL = apiURL + 'offer_list?car_mark_id=' + val;
+            if (attr_name === 'model') {
+                let mark_id = formCarMark.options[formCarMark.selectedIndex].value
+                offerApiURL = apiURL + 'offer_list?car_mark_id=' + mark_id + '&car_model_id=' + val;
+            }
             offerRequest.open("GET", offerApiURL, true);
             offerRequest.onerror = function () {
                 console.log("requestRequest Connection Error");
@@ -129,5 +146,13 @@
             document.getElementById('offers_table_body').innerHTML = offers_html_table;
         }
 
+        function reload() {
+            window.location.reload();
+        }
+        
+        function clearCarModelValues() {
+            document.getElementById('car_model_select').innerHTML = '<option selected>Выберите интересующую модель</option>';
+        }
+        
     </script>
 {% endblock %}
