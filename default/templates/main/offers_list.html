@@ -1,0 +1,32 @@
+<table class="table" id="offers_table">
+    <h2>Предложения</h2>
+    <thead>
+    <tr>
+        <th scope="col">ID запроса</th>
+        <th scope="col">Автомобиль</th>
+        <th scope="col">Цвет</th>
+        <th scope="col">Пробег</th>
+        <th scope="col">Год выпуска</th>
+        <th scope="col">Дополнительные данные</th>
+        <th scope="col">Операции</th>
+    </tr>
+    </thead>
+    <tbody id="offers_table_body">
+    {% for item in offer_set %}
+        {#                    <tr class="row{% cycle "1" "2" %}">#}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
+            <td>{{ item.color }}</td>
+            <td>{{ item.mileage }}</td>
+            <td>{{ item.year_of_issue }}</td>
+            <td>{{ item.additional_properties |default:'-' }}</td>
+            <td><a class="button" href="#">Запросить подробности</a></td>
+        </tr>
+    {% endfor %}
+    {#                <tr class="total">#}
+    {#                    <td colspan="3">Всего</td>#}
+    {#                    <td class="num">{{ offer_set.count }}</td>#}
+    {#                </tr>#}
+    </tbody>
+</table>

@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %} {% endblock title %}
+{% block content %}
+    <div class="row row-cols-10 align-items-start">
+        <div class="col-xxl-2">
+            {% include 'sidebar.html' %}
+        </div>
+        <div class="col-xxl-8">
+            <div class="row row-cols-auto justify-content-between">
+                <div class="col-xxl-4">
+                    {% include 'main/requests_list.html' %}
+                </div>
+                <div class="col-xxl-4">
+                    {% include 'main/offers_list.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript">
+
+        const apiURL = "{{ request.build_absolute_uri }}api/"
+        const form = document.querySelector('select[id=car_mark_select]');
+        form.addEventListener('change', function (event) {
+            let val = event.target.value
+            console.log(val);
+            if (val == Number(val)) {
+                prepareData(val);
+                requestProc(val);
+                offerProc(val);
+            }
+            else {
+                clearCarModelValues();
+            }
+        });
+
+        function prepareData(markId) {
+            carModelProc(markId);
+        }
+
+        function carModelProc(markId) {
+            let modelsRequestURL = apiURL + 'car_mark_models/' + markId + '/'
+            let modelsRequest = new XMLHttpRequest();
+            modelsRequest.open("GET", modelsRequestURL, true);
+            modelsRequest.onerror = function () {
+                console.log("modelsRequest Connection Error");
+            }
+            modelsRequest.onload = function() {
+                let json_data = JSON.parse(modelsRequest.responseText)
+                fillCarModelValues(json_data);
+            }
+            modelsRequest.send();
+        }
+
+        function fillCarModelValues(json_data) {
+            console.log('CarModelValues');
+            console.log(json_data);
+            let models_html_select = '<option selected>Выберите интересующую модель</option>';
+            for (let i = 0; i < json_data.length; i++) {
+                models_html_select += '<option value="' + json_data[i]['id'] + '">' + json_data[i]['name'] + '</option>'
+            }
+            document.getElementById('car_model_select').innerHTML = models_html_select;
+        }
+
+        function clearCarModelValues() {
+            document.getElementById('car_model_select').innerHTML = '<option selected>Выберите интересующую модель</option>';
+        }
+
+        function requestProc(markId) {
+            let requestRequest = new XMLHttpRequest();
+            let requestApiURL = apiURL + 'request_list?car_mark_id=' + markId;
+            requestRequest.open("GET", requestApiURL, true);
+            requestRequest.onerror = function () {
+                console.log("requestRequest Connection Error");
+            }
+            requestRequest.onload = function() {
+                let requests_json_data = JSON.parse(requestRequest.responseText)
+                fillRequests(requests_json_data);
+            }
+            requestRequest.send();
+        }
+
+        function fillRequests(json_data) {
+            console.log('Requests');
+            console.log(json_data);
+            let requests_html_table = '';
+            json_data.forEach( req => {
+                requests_html_table += '<tr>'
+                requests_html_table += '<td>' + req['id'] + '</td>'
+                requests_html_table += '<td>' + req['car_mark'] + ' ' + req['car_model'] + '</td>'
+                requests_html_table += '<td>' + req['color'] + '</td>'
+                requests_html_table += '<td>' + req['additional_requirements'] + '</td>'
+                requests_html_table += '<td><a class="button" href="#">Запросить подробности</a></td>'
+                requests_html_table += '</tr>'
+            });
+            document.getElementById('requests_table_body').innerHTML = requests_html_table;
+        }
+
+        function offerProc(markId) {
+            let offerRequest = new XMLHttpRequest();
+            let offerApiURL = apiURL + 'offer_list?car_mark_id=' + markId;
+            offerRequest.open("GET", offerApiURL, true);
+            offerRequest.onerror = function () {
+                console.log("requestRequest Connection Error");
+            }
+            offerRequest.onload = function() {
+                let offers_json_data = JSON.parse(offerRequest.responseText)
+                fillOffers(offers_json_data);
+            }
+            offerRequest.send();
+        }
+
+        function fillOffers(json_data) {
+            console.log('Offers');
+            console.log(json_data);
+            let offers_html_table = '';
+            json_data.forEach( req => {
+                offers_html_table += '<tr>'
+                offers_html_table += '<td>' + req['id'] + '</td>'
+                offers_html_table += '<td>' + req['car_mark'] + ' ' + req['car_model'] + '</td>'
+                offers_html_table += '<td>' + req['color'] + '</td>'
+                offers_html_table += '<td>' + req['mileage'] + '</td>'
+                offers_html_table += '<td>' + req['year_of_issue'] + '</td>'
+                offers_html_table += '<td>' + req['additional_properties'] + '</td>'
+                offers_html_table += '<td><a class="button" href="#">Запросить подробности</a></td>'
+                offers_html_table += '</tr>'
+            });
+            document.getElementById('offers_table_body').innerHTML = offers_html_table;
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<table class="table" id="requests_table">
+    <h2>Запросы</h2>
+    <thead>
+    <tr>
+        <th scope="col">ID запроса</th>
+        <th scope="col">Автомобиль</th>
+        <th scope="col">Цвет</th>
+        <th scope="col">Дополнительные требования</th>
+        <th scope="col">Операции</th>
+    </tr>
+    </thead>
+    <tbody id="requests_table_body">
+    {% for item in request_set %}
+        {#        <tr class="row{% cycle "1" "2" %}">#}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.car_mark.name }} {{ item.car_model.name }}</td>
+            <td>{{ item.color |default:'-' }}</td>
+            <td>{{ item.additional_requirements |default:'-' }}</td>
+            <td><a class="button" href="#">Запросить подробности</a></td>-
+        </tr>
+    {% endfor %}
+    {#                <tr class="total">#}
+    {#                    <td colspan="3">Всего</td>#}
+    {#                    <td class="num">{{ request_set.count }}</td>#}
+    {#                </tr>#}
+    </tbody>
+</table>
