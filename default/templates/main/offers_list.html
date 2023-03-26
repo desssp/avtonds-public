@@ -11,7 +11,7 @@
         <th scope="col">Операции</th>
     </tr>
     </thead>
-    <tbody id="offers_table_body">
+    <tbody class="flex-column" id="offers_table_body">
     {% for item in offer_set %}
         {#                    <tr class="row{% cycle "1" "2" %}">#}
         <tr>
@@ -20,7 +20,7 @@
             <td>{{ item.color }}</td>
             <td>{{ item.mileage }}</td>
             <td>{{ item.year_of_issue }}</td>
-            <td>{{ item.additional_properties |default:'-' }}</td>
+            <td><span class="d-inline-block text-truncate" style="max-width: 150px;">{{ item.additional_properties |default:'-' }}</span></td>
             <td><a class="button" href="#">Запросить подробности</a></td>
         </tr>
     {% endfor %}

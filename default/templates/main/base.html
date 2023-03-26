@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block title %} {% endblock title %}
 {% block content %}
-    <div class="row row-cols-12 align-items-start g-0">
+    <div class="row row-cols-12 align-items-start vh-100">
         <div class="col-xxl-2">
             {% include 'sidebar.html' %}
         </div>
         <div class="col-xxl-10">
-            <div class="row row-cols-auto justify-content-evenly ">
-                <div class="col-xxl-5">
+            <div class="row row-cols-auto justify-content-evenly">
+                <div class="col">
                     {% include 'main/requests_list.html' %}
                 </div>
-                <div class="col-xxl-5">
+                <div class="col">
                     {% include 'main/offers_list.html' %}
                 </div>
             </div>
