@@ -1,6 +1,6 @@
 <div class="container">
     <h3>Марка</h3>
-    <select class="form-select form-select-sm" aria-label="Марка" id="car_mark_select">
+    <select class="form-select form-select-sm bg-dark text-light" aria-label="Марка" id="car_mark_select">
         <option selected>Выберите интересующую марку авто</option>
         {% for car_mark in car_mark_set %}
             <option value="{{ car_mark.car_mark_id }}">{{ car_mark.car_mark__name }}</option>
@@ -9,7 +9,7 @@
 </div>
 <div class="container">
     <h3>Модель</h3>
-    <select class="form-select form-select-sm" aria-label="Марка" id="car_model_select">
+    <select class="form-select form-select-sm bg-dark text-light" aria-label="Марка" id="car_model_select">
         <option selected>Выберите интересующую модель</option>
     </select>
 </div>
